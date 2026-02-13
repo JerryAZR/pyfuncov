@@ -1,11 +1,11 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 1.1.0 → 1.2.0 (MINOR)
+  Version change: 1.2.0 → 1.3.0 (MINOR)
   Added principles:
-    - VI. Timeout Safety
+    - VII. Fail-Fast Strict Mode
   Modified sections:
-    - Governance: Compliance Verification updated to include timeout safety
+    - Governance: Compliance Verification updated to include fail-fast validation
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md: ✅ already aligned
@@ -91,6 +91,20 @@ All loops MUST have a maximum iteration bound to prevent infinite loops. All wai
 
 **Rationale**: Unbounded loops and waits can cause processes to hang indefinitely, making debugging difficult and causing reliability issues in production. Explicit bounds ensure predictable behavior and faster failure detection.
 
+### VII. Fail-Fast Strict Mode
+
+Fallback behavior is FORBIDDEN. If required data is missing, the system MUST fail fast and report an error immediately. Producing a default or probabilistic behavior to mask missing data is NOT allowed. Any such failure MUST be fixed in the caller, not the callee.
+
+#### Fail-Fast Rules
+
+- Missing required data MUST raise explicit errors, not return defaults
+- Functions MUST validate all required inputs before proceeding
+- Silent fallbacks, magic values, or probabilistic outputs MUST NOT be used to handle missing data
+- Errors MUST include context about what data was missing and where
+- Callers MUST be responsible for providing required data; callees MUST NOT guess
+
+**Rationale**: Hidden fallbacks create fragile systems where bugs manifest far from their source. Fail-fast debugging is faster and more reliable. Making callers responsible for providing data ensures the contract is explicit and traceable.
+
 ## Additional Constraints
 
 ### Testing Discipline
@@ -143,5 +157,6 @@ Before writing any feature code:
 - Architectural integrity (no duplicate logic, no parallel handlers)
 - Single source of truth enforcement
 - Timeout safety (bounded loops, explicit timeouts)
+- Fail-fast validation (no fallback behavior for missing data)
 
-**Version**: 1.2.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13
+**Version**: 1.3.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13
