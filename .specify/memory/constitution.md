@@ -1,11 +1,11 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 1.2.0 → 1.3.0 (MINOR)
+  Version change: 1.3.0 → 1.4.0 (MINOR)
   Added principles:
-    - VII. Fail-Fast Strict Mode
+    - VIII. Explicit Domain States
   Modified sections:
-    - Governance: Compliance Verification updated to include fail-fast validation
+    - Governance: Compliance Verification updated to include explicit domain state validation
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md: ✅ already aligned
@@ -105,7 +105,18 @@ Fallback behavior is FORBIDDEN. If required data is missing, the system MUST fai
 
 **Rationale**: Hidden fallbacks create fragile systems where bugs manifest far from their source. Fail-fast debugging is faster and more reliable. Making callers responsible for providing data ensures the contract is explicit and traceable.
 
-## Additional Constraints
+### VIII. Explicit Domain States
+
+None/null values MUST ONLY represent the absence of a value (e.g., no return value, missing lookup result, invalid reference). They MUST NOT encode domain meaning or outcomes. Distinct domain states (e.g., skip, tie, no-op, pending decision, neutral result) MUST have explicit, distinguishable representations.
+
+#### Domain State Rules
+
+- None/null MUST NOT be used to convey domain semantics (e.g., "no decision made", "result skipped", "tie occurred")
+- Distinct domain states MUST be represented with explicit types (e.g., enums, dataclasses, Result patterns)
+- Functions that can return domain-meaningful "nothing" states MUST return explicit types, not None
+- Any use of None to convey domain semantics is a constitutional violation
+
+**Rationale**: Using None for domain semantics creates ambiguous code where the meaning of "no value" is unclear. Explicit domain types make code self-documenting, enable exhaustive pattern matching, and prevent silent bugs from misinterpreted nulls.
 
 ### Testing Discipline
 
@@ -158,5 +169,6 @@ Before writing any feature code:
 - Single source of truth enforcement
 - Timeout safety (bounded loops, explicit timeouts)
 - Fail-fast validation (no fallback behavior for missing data)
+- Explicit domain state validation (None only represents absence of value)
 
-**Version**: 1.3.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13
+**Version**: 1.4.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13
