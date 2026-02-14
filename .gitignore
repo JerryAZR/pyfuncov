@@ -50,3 +50,6 @@ specs/
 
 # Claude
 .claude/
+
+# MkDocs site output
+docs/site/
