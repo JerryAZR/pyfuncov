@@ -1,29 +1,39 @@
-﻿# pyfuncov Development Guidelines
+# CLAUDE.md
 
-Auto-generated from all feature plans. Last updated: 2026-02-14
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Active Technologies
+## Project Overview
 
-- Python 3.10+ (EOL through 2027+) + Standard library + pytest (for testing) (001-python-funcov)
-
-## Project Structure
-
-```text
-src/
-tests/
-```
+pyfuncov is a Python functional coverage tracking library inspired by SystemVerilog's coverpoint/covergroup concepts. It provides tools for measuring functional coverage in tests, with support for discrete bins, range bins, and transition bins.
 
 ## Commands
 
-cd src; pytest; ruff check .
+```bash
+# Install in development mode
+pip install -e .[dev]
 
-## Code Style
+# Run tests
+pytest
 
-Python 3.10+ (EOL through 2027+): Follow standard conventions
+# Run a single test file
+pytest tests/unit/test_bin.py
 
-## Recent Changes
+# Run linter
+ruff check .
+```
 
-- 001-python-funcov: Added Python 3.10+ (EOL through 2027+) + Standard library + pytest (for testing)
+## Architecture
 
-<!-- MANUAL ADDITIONS START -->
-<!-- MANUAL ADDITIONS END -->
+```text
+src/pyfuncov/
+├── models/          # Data models (Covergroup, Coverpoint, Bin, CoverageData)
+├── core/            # Core functionality (report generation)
+├── storage/         # JSON persistence layer
+└── cli/             # Command-line interface
+```
+
+The library uses a global coverage registry. Covergroups are registered via `cg.register()` and values are sampled via `cg.sample(name, value)`.
+
+## Testing
+
+Tests are in `tests/` with unit tests in `tests/unit/` and integration tests in `tests/integration/`. Test configuration is in `pyproject.toml`.
