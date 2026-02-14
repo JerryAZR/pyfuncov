@@ -17,16 +17,27 @@ A Python functional coverage tracking library inspired by SystemVerilog's coverp
 
 ## Installation
 
-```bash
-pip install pyfuncov
-```
-
-Or install from source:
+Install from source:
 
 ```bash
 git clone https://github.com/JerryAZR/pyfuncov.git
 cd pyfuncov
 pip install -e .
+```
+
+Or install from Git directly:
+
+```bash
+pip install git+https://github.com/JerryAZR/pyfuncov.git
+```
+
+Or add to your project's `pyproject.toml`:
+
+```toml
+[project]
+dependencies = [
+    "pyfuncov @ git+https://github.com/JerryAZR/pyfuncov.git"
+]
 ```
 
 ## Quick Start
