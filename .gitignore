@@ -44,3 +44,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Specs (can be regenerated)
+specs/
+
+# Claude
+.claude/
