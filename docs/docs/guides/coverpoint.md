@@ -35,30 +35,30 @@ cg.add_coverpoint(
 )
 ```
 
-This creates two bins:
-- `low`: values 0-255
-- `high`: values 256-511
+This creates two bins (inclusive on both ends):
+- `low`: values 0-256
+- `high`: values 256-512
 
 ## Transition Bins
 
-Transition bins track sequences of values:
+Transition bins track sequences of values (previous value -> current value):
 
 ```python
 cg.add_coverpoint(
     name="state",
     bins=[
-        Bin(name="idle_to_active", bin_type=BinKind.TRANSITION, value=["idle", "active"]),
-        Bin(name="active_to_idle", bin_type=BinKind.TRANSITION, value=["active", "idle"]),
+        Bin(name="idle_to_active", bin_type=BinKind.TRANSITION, from_value=0, to_value=1),
+        Bin(name="active_to_idle", bin_type=BinKind.TRANSITION, from_value=1, to_value=0),
     ]
 )
 ```
 
-This tracks transitions from idle to active and vice versa.
+This tracks transitions from 0 to 1 and from 1 to 0. The covergroup automatically tracks the previous value when you call `sample()`.
 
 ## Complete Example
 
 ```python
-from pyfuncov import Covergroup, Bin, BinKind
+from pyfuncov import Covergroup, Bin, BinKind, save_coverage, load_coverage, get_coverage_data, generate_report
 
 cg = Covergroup(name="coverage", module="test")
 
@@ -86,7 +86,11 @@ cg.register()
 cg.sample("opcode", 0x01)
 cg.sample("address", 0x0500)  # Falls in "kernel" range
 
-print(cg.report())
+# Save and generate report
+save_coverage("coverage.json")
+load_coverage("coverage.json")
+data = get_coverage_data()
+print(generate_report("text", {"covergroups": data.covergroups}))
 ```
 
 ## Bin Types Summary

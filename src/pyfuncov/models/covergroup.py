@@ -63,14 +63,16 @@ class Covergroup:
             logger.warning(f"Coverpoint '{coverpoint_name}' not found in covergroup '{self.name}'")
             return None
 
+        # Update previous value for transition tracking BEFORE checking bins
+        # This ensures transition bins work on the second sample
         prev_value = self._prev_values.get(coverpoint_name)
+        if isinstance(value, int):
+            self._prev_values[coverpoint_name] = value
+
         matching_bin = coverpoint.find_matching_bin(value, prev_value)
 
         if matching_bin is not None:
             matching_bin.hit()
-            # Update previous value for transition tracking
-            if isinstance(value, int):
-                self._prev_values[coverpoint_name] = value
             return matching_bin
 
         # Handle out-of-bounds

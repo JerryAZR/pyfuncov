@@ -9,18 +9,12 @@ This guide will help you get started with pyfuncov in about 10 minutes.
 
 ## Installation
 
-Install pyfuncov from Git:
-
-```bash
-pip install git+https://github.com/JerryAZR/pyfuncov.git
-```
-
-Or clone and install in development mode:
+Clone and install in development mode:
 
 ```bash
 git clone https://github.com/JerryAZR/pyfuncov.git
 cd pyfuncov
-pip install -e .
+pip install -e .[dev]
 ```
 
 ## Your First Coverage Test
@@ -28,7 +22,7 @@ pip install -e .
 Create a Python file and add the following code:
 
 ```python
-from pyfuncov import Covergroup, Bin, BinKind
+from pyfuncov import Covergroup, Bin, BinKind, save_coverage, load_coverage, get_coverage_data, generate_report
 
 # Create a covergroup
 cg = Covergroup(name="my_coverage", module="test")
@@ -53,8 +47,11 @@ cg.sample("x", 1)
 cg.sample("x", 3)
 cg.sample("x", 5)
 
-# Get the coverage report
-print(cg.report())
+# Save coverage and generate report
+save_coverage("coverage.json")
+load_coverage("coverage.json")
+data = get_coverage_data()
+print(generate_report("text", {"covergroups": data.covergroups}))
 ```
 
 ## Viewing Documentation Offline

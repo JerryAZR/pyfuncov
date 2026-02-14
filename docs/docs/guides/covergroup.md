@@ -56,17 +56,25 @@ cg.sample("y", 15)  # Record value 15 for coverpoint "y"
 
 ## Getting Coverage Reports
 
-Generate a coverage report at any time:
+Generate a coverage report using the storage and report functions:
 
 ```python
-report = cg.report()
+from pyfuncov import save_coverage, load_coverage, get_coverage_data, generate_report
+
+# Save coverage data to a file
+save_coverage("coverage.json")
+
+# Load coverage data and generate a report
+load_coverage("coverage.json")
+data = get_coverage_data()
+report = generate_report("text", {"covergroups": data.covergroups})
 print(report)
 ```
 
 ## Complete Example
 
 ```python
-from pyfuncov import Covergroup, Bin, BinKind
+from pyfuncov import Covergroup, Bin, BinKind, save_coverage, load_coverage, get_coverage_data, generate_report
 
 # Create and configure covergroup
 cg = Covergroup(name="example", module="test")
@@ -94,15 +102,34 @@ cg.sample("mode", "read")
 cg.sample("mode", "write")
 cg.sample("address", 100)
 
-# Get report
-print(cg.report())
+# Save and generate report
+save_coverage("coverage.json")
+load_coverage("coverage.json")
+data = get_coverage_data()
+print(generate_report("text", {"covergroups": data.covergroups}))
 ```
 
 ## Methods
 
 | Method | Description |
 |--------|-------------|
-| `add_coverpoint(name, bins)` | Add a coverpoint with specified bins |
+| `add_coverpoint(name, bins, out_of_bounds)` | Add a coverpoint with specified bins |
 | `register(module=None)` | Register the covergroup before sampling |
 | `sample(name, value)` | Record a sampled value |
-| `report()` | Generate coverage report |
+
+## Handling Out-of-Bounds Values
+
+The `add_coverpoint` method accepts an `out_of_bounds` parameter to control how values outside the defined bins are handled:
+
+```python
+from pyfuncov import OutOfBoundsMode
+
+# IGNORE (default): Don't track, continue silently
+cg.add_coverpoint(name="x", bins=[...], out_of_bounds=OutOfBoundsMode.IGNORE)
+
+# WARN: Log a warning, continue silently
+cg.add_coverpoint(name="x", bins=[...], out_of_bounds=OutOfBoundsMode.WARN)
+
+# ERROR: Raise an exception
+cg.add_coverpoint(name="x", bins=[...], out_of_bounds=OutOfBoundsMode.ERROR)
+```
