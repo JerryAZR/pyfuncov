@@ -11,28 +11,45 @@
 
 ## Installation
 
+Install from Git:
+
 ```bash
-pip install pyfuncov
+pip install git+https://github.com/JerryAZR/pyfuncov.git
+```
+
+Or clone and install in development mode:
+
+```bash
+git clone https://github.com/JerryAZR/pyfuncov.git
+cd pyfuncov
+pip install -e .
 ```
 
 ## Quick Start
 
 ```python
-from pyfuncov import Covergroup, Coverpoint
+from pyfuncov import Covergroup, Bin, BinKind
 
 # Create a covergroup
-cg = Covergroup("my_coverage")
+cg = Covergroup(name="my_coverage", module="test")
 
 # Add coverpoints with different bin types
-cg.coverpoint("x", bins=[1, 2, 3, 4, 5])  # Discrete bins
-cg.coverpoint("y", bins={"low": range(0, 10), "high": range(10, 20)})  # Range bins
+cg.add_coverpoint(
+    name="x",
+    bins=[
+        Bin(name="one", bin_type=BinKind.DISCRETE, value=1),
+        Bin(name="two", bin_type=BinKind.DISCRETE, value=2),
+        Bin(name="three", bin_type=BinKind.DISCRETE, value=3),
+    ]
+)
 
 # Register the covergroup
 cg.register()
 
 # Sample values
+cg.sample("x", 1)
+cg.sample("x", 2)
 cg.sample("x", 3)
-cg.sample("y", 15)
 
 # Get coverage report
 print(cg.report())

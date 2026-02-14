@@ -9,10 +9,18 @@ This guide will help you get started with pyfuncov in about 10 minutes.
 
 ## Installation
 
-Install pyfuncov using pip:
+Install pyfuncov from Git:
 
 ```bash
-pip install pyfuncov
+pip install git+https://github.com/JerryAZR/pyfuncov.git
+```
+
+Or clone and install in development mode:
+
+```bash
+git clone https://github.com/JerryAZR/pyfuncov.git
+cd pyfuncov
+pip install -e .
 ```
 
 ## Your First Coverage Test
@@ -20,13 +28,22 @@ pip install pyfuncov
 Create a Python file and add the following code:
 
 ```python
-from pyfuncov import Covergroup
+from pyfuncov import Covergroup, Bin, BinKind
 
 # Create a covergroup
-cg = Covergroup("my_coverage")
+cg = Covergroup(name="my_coverage", module="test")
 
 # Add coverpoints with discrete bins
-cg.coverpoint("x", bins=[1, 2, 3, 4, 5])
+cg.add_coverpoint(
+    name="x",
+    bins=[
+        Bin(name="one", bin_type=BinKind.DISCRETE, value=1),
+        Bin(name="two", bin_type=BinKind.DISCRETE, value=2),
+        Bin(name="three", bin_type=BinKind.DISCRETE, value=3),
+        Bin(name="four", bin_type=BinKind.DISCRETE, value=4),
+        Bin(name="five", bin_type=BinKind.DISCRETE, value=5),
+    ]
+)
 
 # Register the covergroup
 cg.register()
@@ -38,26 +55,6 @@ cg.sample("x", 5)
 
 # Get the coverage report
 print(cg.report())
-```
-
-## Expected Output
-
-```json
-{
-  "my_coverage": {
-    "x": {
-      "bins": {
-        "1": 1,
-        "2": 0,
-        "3": 1,
-        "4": 0,
-        "5": 1
-      },
-      "total_hits": 3,
-      "coverage_percent": 60.0
-    }
-  }
-}
 ```
 
 ## Viewing Documentation Offline

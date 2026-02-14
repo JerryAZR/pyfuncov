@@ -8,7 +8,7 @@ Covergroups are the main container for organizing related coverage points in pyf
 from pyfuncov import Covergroup
 
 # Create a new covergroup
-cg = Covergroup("my_coverage")
+cg = Covergroup(name="my_coverage", module="test")
 ```
 
 ## Adding Coverpoints
@@ -16,11 +16,25 @@ cg = Covergroup("my_coverage")
 Coverpoints define what values you want to track:
 
 ```python
+from pyfuncov import Bin, BinKind
+
 # Add a coverpoint with discrete bins
-cg.coverpoint("x", bins=[1, 2, 3, 4, 5])
+cg.add_coverpoint(
+    name="x",
+    bins=[
+        Bin(name="one", bin_type=BinKind.DISCRETE, value=1),
+        Bin(name="two", bin_type=BinKind.DISCRETE, value=2),
+    ]
+)
 
 # Add a coverpoint with range bins
-cg.coverpoint("y", bins={"low": range(0, 10), "high": range(10, 20)})
+cg.add_coverpoint(
+    name="y",
+    bins=[
+        Bin(name="low", bin_type=BinKind.RANGE, range_min=0, range_max=10),
+        Bin(name="high", bin_type=BinKind.RANGE, range_min=10, range_max=20),
+    ]
+)
 ```
 
 ## Registering a Covergroup
@@ -36,7 +50,7 @@ cg.register()
 Use the `sample()` method to record values:
 
 ```python
-cg.sample("x", 3)  # Record value 3 for coverpoint "x"
+cg.sample("x", 1)  # Record value 1 for coverpoint "x"
 cg.sample("y", 15)  # Record value 15 for coverpoint "y"
 ```
 
@@ -52,12 +66,25 @@ print(report)
 ## Complete Example
 
 ```python
-from pyfuncov import Covergroup
+from pyfuncov import Covergroup, Bin, BinKind
 
 # Create and configure covergroup
-cg = Covergroup("example")
-cg.coverpoint("mode", bins=["read", "write", "idle"])
-cg.coverpoint("address", bins={"low": range(0, 256), "high": range(256, 512)})
+cg = Covergroup(name="example", module="test")
+cg.add_coverpoint(
+    name="mode",
+    bins=[
+        Bin(name="read", bin_type=BinKind.DISCRETE, value="read"),
+        Bin(name="write", bin_type=BinKind.DISCRETE, value="write"),
+        Bin(name="idle", bin_type=BinKind.DISCRETE, value="idle"),
+    ]
+)
+cg.add_coverpoint(
+    name="address",
+    bins=[
+        Bin(name="low", bin_type=BinKind.RANGE, range_min=0, range_max=256),
+        Bin(name="high", bin_type=BinKind.RANGE, range_min=256, range_max=512),
+    ]
+)
 
 # Register before sampling
 cg.register()
@@ -75,7 +102,7 @@ print(cg.report())
 
 | Method | Description |
 |--------|-------------|
-| `coverpoint(name, bins)` | Add a coverpoint with specified bins |
-| `register()` | Register the covergroup before sampling |
+| `add_coverpoint(name, bins)` | Add a coverpoint with specified bins |
+| `register(module=None)` | Register the covergroup before sampling |
 | `sample(name, value)` | Record a sampled value |
 | `report()` | Generate coverage report |
