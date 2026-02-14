@@ -1,6 +1,5 @@
 """Unit tests for Coverpoint model."""
 
-import pytest
 
 from pyfuncov.models.bin import Bin
 from pyfuncov.models.coverpoint import Coverpoint

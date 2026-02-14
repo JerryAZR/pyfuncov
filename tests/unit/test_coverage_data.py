@@ -1,6 +1,5 @@
 """Unit tests for CoverageData model."""
 
-from datetime import datetime
 
 import pytest
 
@@ -51,8 +50,6 @@ class TestCoverageDataPercentageCalculation:
                 }
             }
         }
-        cd = CoverageData(covergroups=covergroups)
-
         # Calculate total bins and hit bins manually
         total_bins = 0
         hit_bins = 0

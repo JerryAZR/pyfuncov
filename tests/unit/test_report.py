@@ -5,8 +5,8 @@ import json
 import pytest
 
 from pyfuncov.core.report import (
-    CovergroupReport,
     CoverageReport,
+    CovergroupReport,
     calculate_coverage,
     compare_reports,
     generate_json_report,
